@@ -813,10 +813,7 @@ const CATEGORIES = [
 
 function App() {
   // Global State
-  const [activePage, setActivePage] = useState(() => {
-    const saved = localStorage.getItem("activePage");
-    return (saved && saved !== "null" && saved !== "undefined") ? saved : "home";
-  });
+  const [activePage, setActivePage] = useState("home");
   const [activeCategory, setActiveCategory] = useState(() => {
     const saved = localStorage.getItem("activeCategory");
     return (saved && saved !== "null" && saved !== "undefined") ? saved : "All";
@@ -847,7 +844,7 @@ function App() {
   });
 
   const isLoggedIn = user && isSessionActive;
-  
+
   const [cartItems, setCartItems] = useState(() => {
     try {
       const saved = localStorage.getItem("cartItems");
@@ -894,7 +891,7 @@ function App() {
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [pendingPayTotal, setPendingPayTotal] = useState(0);
   const [heroSearch, setHeroSearch] = useState("");
-  
+
   const [selectedProductId, setSelectedProductId] = useState(() => {
     const saved = localStorage.getItem("selectedProductId");
     if (saved && saved !== "null" && saved !== "undefined") {
@@ -1019,7 +1016,7 @@ function App() {
     }
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Location Fetcher
@@ -1121,7 +1118,7 @@ function App() {
 
   // Authentication
   function initiateLogin() {
-    if (user) {
+    if (isLoggedIn) {
       window.history.pushState({ page: "profile", category: activeCategory, productId: null }, "", window.location.pathname);
       setActivePage("profile");
     } else {
@@ -1192,7 +1189,7 @@ function App() {
     if (sortBy === "price-low") result.sort((a, b) => a.price - b.price);
     if (sortBy === "price-high") result.sort((a, b) => b.price - a.price);
     if (sortBy === "rating") result.sort((a, b) => a.rating - b.rating);
-    
+
     return result;
   }, [search, activeCategory, minPrice, maxPrice, minRating, sortBy]);
 
@@ -1224,8 +1221,8 @@ function App() {
 
   // Trending items to show when search is focused but empty
   const trendingFiltered = useMemo(() => {
-     if (search.length === 0) return TRENDING_SEARCHES;
-     return TRENDING_SEARCHES.filter(t => t.toLowerCase().includes(search.toLowerCase()));
+    if (search.length === 0) return TRENDING_SEARCHES;
+    return TRENDING_SEARCHES.filter(t => t.toLowerCase().includes(search.toLowerCase()));
   }, [search]);
 
   // Best sellers for featured section
@@ -1544,7 +1541,7 @@ function App() {
                   <h4>{t("cart")} ({cartCount})</h4>
                   <div className="popup-items">
                     {cartItems.map(item => (
-                      <div key={item.id} className="popup-item" onClick={() => { handleProductClick(item.id); setIsCartPopupOpen(false); }} style={{cursor: "pointer"}}>
+                      <div key={item.id} className="popup-item" onClick={() => { handleProductClick(item.id); setIsCartPopupOpen(false); }} style={{ cursor: "pointer" }}>
                         <span className="truncate" onMouseOver={(e) => e.target.style.color = "var(--accent-color)"} onMouseOut={(e) => e.target.style.color = ""}>{item.name} (x{item.quantity})</span>
                         <span style={{ fontWeight: 600 }}>₹{item.price * item.quantity}</span>
                       </div>
@@ -1626,12 +1623,12 @@ function App() {
 
       {/* Categories Bar */}
       <div className="nav-categories" style={{ padding: '0.5rem 4%', background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-color)' }}>
-        <button 
-          className="nav-cat-btn all-menu-btn" 
+        <button
+          className="nav-cat-btn all-menu-btn"
           onClick={() => setIsMobileMenuOpen(true)}
           style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: '700' }}
         >
-          <span className="hamburger-icon" style={{ fontSize: '1.2rem' }}>☰</span> {t("cat_all")}
+          <span className="hamburger-icon" style={{ fontSize: '1.2rem' }}>☰</span>
         </button>
         <button
           className={`nav-cat-btn ${activePage === "home" ? "active" : ""}`}
@@ -1661,7 +1658,7 @@ function App() {
             <h3>Filters & Sort</h3>
             <button className="close-filter-drawer" onClick={() => setIsFilterDrawerOpen(false)}>✖</button>
           </div>
-          
+
           <div className="filter-drawer-body">
             {/* Section 1: Shop By Category */}
             <div className="filter-section">
@@ -1717,13 +1714,13 @@ function App() {
                 <div className="price-range-header">
                   <span>Up to ₹{maxPrice || 2000}</span>
                 </div>
-                <input 
-                  type="range" 
-                  min="10" 
-                  max="2000" 
+                <input
+                  type="range"
+                  min="10"
+                  max="2000"
                   step="10"
-                  value={maxPrice || 2000} 
-                  onChange={(e) => { setMinPrice("0"); setMaxPrice(e.target.value); }} 
+                  value={maxPrice || 2000}
+                  onChange={(e) => { setMinPrice("0"); setMaxPrice(e.target.value); }}
                   style={{
                     background: `linear-gradient(to right, var(--accent-color) ${((maxPrice || 2000) / 2000) * 100}%, var(--border-color) ${((maxPrice || 2000) / 2000) * 100}%)`
                   }}
@@ -1744,14 +1741,14 @@ function App() {
                   <label key={`mobile-rating-${r}`} className="filter-label">
                     <input type="radio" name="mobileRating" onChange={() => { setMinRating(String(r)); setIsFilterDrawerOpen(false); }} checked={minRating === String(r)} />
                     <div className="rating-content">
-                      <span className="stars">{"★".repeat(r)}{"☆".repeat(5-r)}</span>
+                      <span className="stars">{"★".repeat(r)}{"☆".repeat(5 - r)}</span>
                       <span className="up-text">& Up</span>
                     </div>
                   </label>
                 ))}
               </div>
             </div>
-            
+
             <button className="btn-primary" style={{ width: '100%', marginTop: '2rem' }} onClick={() => setIsFilterDrawerOpen(false)}>
               Apply Filters
             </button>
@@ -1880,10 +1877,10 @@ function App() {
               <h1>{activeCategory === "All" ? t("cat_all") : t("cat_" + activeCategory.toLowerCase())}</h1>
               <p>{filteredProducts.length} results found {search ? `${t("search_in")} "${search}"` : ""}</p>
             </div>
-            
+
             {/* Mobile Filter Toggle */}
-            <button 
-              className="mobile-filter-trigger" 
+            <button
+              className="mobile-filter-trigger"
               onClick={() => setIsFilterDrawerOpen(true)}
             >
               <span>⚡ Filters</span>
@@ -1942,18 +1939,18 @@ function App() {
                     <input type="radio" name="priceRange" onChange={() => { setMinPrice("1000"); setMaxPrice(""); }} checked={minPrice === "1000" && !maxPrice} />
                     <span className="label-text">{t("filter_over_1000")}</span>
                   </label>
-                  
+
                   <div className="price-range-slider-wrapper" style={{ marginTop: '1.5rem' }}>
                     <div className="price-range-header">
                       <span>Up to ₹{maxPrice || 2000}</span>
                     </div>
-                    <input 
-                      type="range" 
-                      min="10" 
-                      max="2000" 
+                    <input
+                      type="range"
+                      min="10"
+                      max="2000"
                       step="10"
-                      value={maxPrice || 2000} 
-                      onChange={(e) => { setMinPrice("0"); setMaxPrice(e.target.value); }} 
+                      value={maxPrice || 2000}
+                      onChange={(e) => { setMinPrice("0"); setMaxPrice(e.target.value); }}
                       style={{
                         background: `linear-gradient(to right, var(--accent-color) ${((maxPrice || 2000) / 2000) * 100}%, var(--border-color) ${((maxPrice || 2000) / 2000) * 100}%)`
                       }}
@@ -2200,16 +2197,17 @@ function App() {
       )}
 
       {/* PROFILE */}
-      {activePage === "profile" && (
+      {activePage === "profile" && isLoggedIn && user && (
         <Profile
           user={user}
           setUser={setUser}
           isLoggedIn={isLoggedIn}
           setIsSessionActive={setIsSessionActive}
           onLogout={() => {
+            setUser(null);
             setIsSessionActive(false);
             setActivePage("home");
-            showToast("Session Ended. Account data preserved. 👋", "info");
+            showToast("Logged out successfully. 👋", "info");
           }}
         />
       )}
@@ -2229,10 +2227,10 @@ function App() {
         </div>
         <div className="footer-grid">
           <div className="footer-col">
-            <h3 
-              className="logo-icon" 
+            <h3
+              className="logo-icon"
               style={{ marginBottom: "0.8rem", cursor: "pointer" }}
-              onClick={() => { window.history.pushState({ page: "home", category: "All", productId: null }, "", window.location.pathname); setActivePage("home"); setSearch(""); window.scrollTo(0,0); }}
+              onClick={() => { window.history.pushState({ page: "home", category: "All", productId: null }, "", window.location.pathname); setActivePage("home"); setSearch(""); window.scrollTo(0, 0); }}
             >
               TechStore
             </h3>
