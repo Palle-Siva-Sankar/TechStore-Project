@@ -8,6 +8,7 @@ function ProductCard({
   originalPrice,
   discount,
   rating,
+  reviews = [],
   isBestSeller,
   isWishListed,
   onAddToCart,
@@ -43,6 +44,9 @@ function ProductCard({
             {"☆".repeat(Math.abs(5 - Math.floor(rating)))}
           </span>
           <span className="rating-value">{rating}</span>
+          {reviews.length > 0 && (
+            <span className="review-count">({reviews.length})</span>
+          )}
         </div>
 
         {isBestSeller && <span className="bestseller">Best Seller</span>}

@@ -39,7 +39,7 @@ content = content.replace(/ Switch to Dark Mode/, '🌙 Switch to Dark Mode');
 content = content.replace(/ Language:/, '🌐 Language:');
 
 // 5. Final safety cleanup of any remaining replacement characters
-content = content.replace(//g, ''); // Remove stray double replacement chars
+// content = content.replace(//g, ''); // Remove stray double replacement chars
 
 // Save with BOM to force UTF-8 interpretation on Windows
 const BOM = Buffer.from([0xEF, 0xBB, 0xBF]);

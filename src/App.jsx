@@ -813,7 +813,10 @@ const CATEGORIES = [
 
 function App() {
   // Global State
-  const [activePage, setActivePage] = useState("home");
+  const [activePage, setActivePage] = useState(() => {
+    const saved = localStorage.getItem("activePage");
+    return (saved && saved !== "null" && saved !== "undefined") ? saved : "home";
+  });
   const [activeCategory, setActiveCategory] = useState(() => {
     const saved = localStorage.getItem("activeCategory");
     return (saved && saved !== "null" && saved !== "undefined") ? saved : "All";
@@ -1361,7 +1364,7 @@ function App() {
       <nav className="navbar">
         <div className="nav-content">
           <div className="nav-container">
-            <a href="#" onClick={(e) => { e.preventDefault(); window.history.pushState({ page: "home", category: "All", productId: null }, "", window.location.pathname); setActivePage("home"); setSearch(""); }} className="logo">
+            <a href="#" onClick={(e) => { e.preventDefault(); window.history.pushState({ page: "home", category: "All", productId: null }, "", window.location.pathname); setActivePage("home"); setSearch(""); window.scrollTo(0, 0); }} className="logo">
               <span className="logo-icon">TechStore</span>
             </a>
           </div>
@@ -1570,7 +1573,7 @@ function App() {
               <button className="close-drawer" onClick={() => setIsMobileMenuOpen(false)}>✖</button>
             </div>
             <div className="drawer-links">
-              <button onClick={() => { window.history.pushState({ page: "home", category: "All", productId: null }, "", window.location.pathname); setActivePage("home"); setIsMobileMenuOpen(false); }}>🏠 {t("nav_home")}</button>
+              <button onClick={() => { window.history.pushState({ page: "home", category: "All", productId: null }, "", window.location.pathname); setActivePage("home"); setIsMobileMenuOpen(false); window.scrollTo(0, 0); }}>🏠 {t("nav_home")}</button>
               <button onClick={() => { initiateLogin(); setIsMobileMenuOpen(false); }}>🔐 {isLoggedIn ? t("profile") : t("sign_in")}</button>
               <button onClick={() => { window.history.pushState({ page: "orders", category: activeCategory, productId: null }, "", window.location.pathname); setActivePage("orders"); setIsMobileMenuOpen(false); }}>📦 {t("orders")}</button>
               <button onClick={() => { window.history.pushState({ page: "wishlist", category: activeCategory, productId: null }, "", window.location.pathname); setActivePage("wishlist"); setIsMobileMenuOpen(false); }}>❤️ {t("wishlist")}</button>
@@ -1632,7 +1635,7 @@ function App() {
         </button>
         <button
           className={`nav-cat-btn ${activePage === "home" ? "active" : ""}`}
-          onClick={() => { window.history.pushState({ page: "home", category: "All", productId: null }, "", window.location.pathname); setActivePage("home"); setSearch(""); }}
+          onClick={() => { window.history.pushState({ page: "home", category: "All", productId: null }, "", window.location.pathname); setActivePage("home"); setSearch(""); window.scrollTo(0, 0); }}
           style={{ fontWeight: '700' }}
         >
           Home
@@ -1830,6 +1833,7 @@ function App() {
                   originalPrice={data.originalPrice}
                   discount={data.discount}
                   rating={data.rating}
+                  reviews={data.reviews}
                   isBestSeller={data.isBestSeller}
                   isWishListed={wishlist.includes(data.id)}
                   onAddToCart={() => addToCart(data)}
@@ -1853,6 +1857,7 @@ function App() {
                   originalPrice={data.originalPrice}
                   discount={data.discount}
                   rating={data.rating}
+                  reviews={data.reviews}
                   isBestSeller={data.isBestSeller}
                   isWishListed={wishlist.includes(data.id)}
                   onAddToCart={() => addToCart(data)}
@@ -2015,6 +2020,7 @@ function App() {
                     originalPrice={data.originalPrice}
                     discount={data.discount}
                     rating={data.rating}
+                    reviews={data.reviews}
                     isBestSeller={data.isBestSeller}
                     isWishListed={wishlist.includes(data.id)}
                     onAddToCart={() => addToCart(data)}
@@ -2064,6 +2070,7 @@ function App() {
                   originalPrice={data.originalPrice}
                   discount={data.discount}
                   rating={data.rating}
+                  reviews={data.reviews}
                   isBestSeller={data.isBestSeller}
                   isWishListed={true}
                   onAddToCart={() => addToCart(data)}
@@ -2222,7 +2229,13 @@ function App() {
         </div>
         <div className="footer-grid">
           <div className="footer-col">
-            <h3 className="logo-icon" style={{ marginBottom: "0.8rem" }}>TechStore</h3>
+            <h3 
+              className="logo-icon" 
+              style={{ marginBottom: "0.8rem", cursor: "pointer" }}
+              onClick={() => { window.history.pushState({ page: "home", category: "All", productId: null }, "", window.location.pathname); setActivePage("home"); setSearch(""); window.scrollTo(0,0); }}
+            >
+              TechStore
+            </h3>
             <p>{t("footer_desc")}</p>
           </div>
           <div className="footer-col">

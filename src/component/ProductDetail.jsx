@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import ProductCard from "./ProductCard";
 
 export default function ProductDetail({ product, allProducts, wishlist, onAddToCart, onToggleWish, onGoBack, onViewProduct }) {
@@ -48,7 +48,7 @@ export default function ProductDetail({ product, allProducts, wishlist, onAddToC
               {"☆".repeat(5 - Math.floor(product.rating))}
             </span>
             <span className="pd-rating-value">{product.rating} / 5.0</span>
-            <span className="pd-reviews">({Math.floor(Math.random() * 500 + 100)} reviews)</span>
+            <span className="pd-reviews">({product.reviews?.length || 0} reviews)</span>
           </div>
 
           <div className="pd-price-box">
@@ -103,10 +103,13 @@ export default function ProductDetail({ product, allProducts, wishlist, onAddToC
         </div>
       </div>
 
-      {/* Tabs: Description / Specs */}
+      {/* Tabs: Description / Specs / Reviews */}
       <div className="pd-tabs">
         <button className={`pd-tab ${activeTab === "description" ? "active" : ""}`} onClick={() => setActiveTab("description")}>Description</button>
         <button className={`pd-tab ${activeTab === "specs" ? "active" : ""}`} onClick={() => setActiveTab("specs")}>Specifications</button>
+        <button className={`pd-tab ${activeTab === "reviews" ? "active" : ""}`} onClick={() => setActiveTab("reviews")}>
+          Reviews ({product.reviews?.length || 0})
+        </button>
       </div>
       <div className="pd-tab-content">
         {activeTab === "description" && (
@@ -123,6 +126,56 @@ export default function ProductDetail({ product, allProducts, wishlist, onAddToC
             <div className="pd-spec"><strong>Price</strong><span>₹{product.price}</span></div>
             <div className="pd-spec"><strong>Availability</strong><span>In Stock</span></div>
             <div className="pd-spec"><strong>Warranty</strong><span>1 Year</span></div>
+          </div>
+        )}
+        {activeTab === "reviews" && (
+          <div className="pd-reviews-section">
+            <div className="pd-reviews-header">
+              <div className="pd-rating-summary">
+                <div className="pd-rating-big">{product.rating}</div>
+                <div className="pd-stars-big">
+                  {"★".repeat(Math.floor(product.rating))}
+                  {"☆".repeat(5 - Math.floor(product.rating))}
+                </div>
+                <div className="pd-rating-count">Based on {product.reviews?.length || 0} reviews</div>
+              </div>
+              <div className="pd-rating-bars">
+                {[5, 4, 3, 2, 1].map(star => {
+                  const count = product.reviews?.filter(r => r.rating === star).length || 0;
+                  const percent = product.reviews?.length ? (count / product.reviews.length) * 100 : 0;
+                  return (
+                    <div key={star} className="pd-rating-bar-row">
+                      <span>{star} ★</span>
+                      <div className="pd-bar-bg"><div className="pd-bar-fill" style={{ width: `${percent}%` }}></div></div>
+                      <span className="pd-bar-count">{count}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pd-reviews-list">
+              {product.reviews && product.reviews.length > 0 ? (
+                product.reviews.map(review => (
+                  <div key={review.id} className="pd-review-item">
+                    <div className="pd-review-user">
+                      <img src={review.avatar} alt={review.user} className="pd-review-avatar" />
+                      <div className="pd-user-info">
+                        <strong>{review.user}</strong>
+                        {review.verified && <span className="pd-verified">✓ Verified Purchase</span>}
+                      </div>
+                      <span className="pd-review-date">{review.date}</span>
+                    </div>
+                    <div className="pd-review-rating">
+                      {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                    </div>
+                    <p className="pd-review-comment">{review.comment}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="pd-no-reviews">No reviews yet. Be the first to review this product!</div>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -142,6 +195,7 @@ export default function ProductDetail({ product, allProducts, wishlist, onAddToC
                 originalPrice={p.originalPrice}
                 discount={p.discount}
                 rating={p.rating}
+                reviews={p.reviews}
                 isBestSeller={p.isBestSeller}
                 isWishListed={wishlist.includes(p.id)}
                 onAddToCart={() => onAddToCart(p)}
@@ -168,6 +222,7 @@ export default function ProductDetail({ product, allProducts, wishlist, onAddToC
                 originalPrice={p.originalPrice}
                 discount={p.discount}
                 rating={p.rating}
+                reviews={p.reviews}
                 isBestSeller={p.isBestSeller}
                 isWishListed={wishlist.includes(p.id)}
                 onAddToCart={() => onAddToCart(p)}
