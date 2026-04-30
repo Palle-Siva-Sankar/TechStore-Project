@@ -1871,7 +1871,7 @@ function App() {
         <section className="products-page-wrapper">
           <div className="products-header-row">
             <div className="header-info-col">
-              <h1>{activeCategory === "All" ? t("cat_all") : t("cat_" + activeCategory.toLowerCase())}</h1>
+              <h1>{activeCategory === "All" ? "" : t("cat_" + activeCategory.toLowerCase())}</h1>
               <p>{filteredProducts.length} results found {search ? `${t("search_in")} "${search}"` : ""}</p>
             </div>
 
