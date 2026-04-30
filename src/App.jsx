@@ -954,10 +954,7 @@ function App() {
     localStorage.setItem("orders", JSON.stringify(orders));
   }, [orders]);
 
-  // Persist Page State
-  useEffect(() => {
-    localStorage.setItem("activePage", activePage);
-  }, [activePage]);
+  // Removed activePage persistence as requested (always default to home)
 
   useEffect(() => {
     localStorage.setItem("activeCategory", activeCategory);
@@ -1605,7 +1602,7 @@ function App() {
 
               <div className="drawer-divider"></div>
               <h4>Shop By Category</h4>
-              {CATEGORIES.map(cat => (
+              {CATEGORIES.filter(c => c.key !== "All").map(cat => (
                 <button key={cat.key} onClick={() => { goToCategory(cat.key); setIsMobileMenuOpen(false); }}>
                   {cat.icon} {t(cat.label_key)}
                 </button>
@@ -1666,7 +1663,7 @@ function App() {
                 <h4>{t("footer_shop")}</h4>
               </div>
               <div className="filter-radio-group">
-                {CATEGORIES.map(cat => (
+                {CATEGORIES.filter(c => c.key !== "All").map(cat => (
                   <label key={`mobile-cat-${cat.key}`} className="filter-label">
                     <input
                       type="radio"
@@ -1897,7 +1894,7 @@ function App() {
                   )}
                 </div>
                 <div className="filter-radio-group">
-                  {CATEGORIES.map(cat => (
+                  {CATEGORIES.filter(c => c.key !== "All").map(cat => (
                     <label key={cat.key} className="filter-label">
                       <input
                         type="radio"
